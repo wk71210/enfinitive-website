@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Enfinitive | We Build Dreams</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Space Grotesk', sans-serif; background: #050508; color: white; }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        .gradient-text { background: linear-gradient(135deg, #6366f1, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <svg class="w-10 h-10" viewBox="0 0 100 100">
+                    <path d="M50 5 L61 35 L95 35 L68 57 L79 87 L50 65 L21 87 L32 57 L5 35 L39 35 Z" fill="url(#grad)"/>
+                    <defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#a855f7"/>
+                    </linearGradient></defs>
+                </svg>
+                <span class="text-xl font-bold">The Enfinitive</span>
+            </div>
+            <div class="hidden md:flex gap-6">
+                <a href="#home" class="hover:text-purple-400">Home</a>
+                <a href="#services" class="hover:text-purple-400">Services</a>
+                <a href="#portfolio" class="hover:text-purple-400">Portfolio</a>
+                <a href="#contact" class="px-6 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section id="home" class="min-h-screen flex items-center justify-center pt-20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                We Build <span class="gradient-text">Digital Dreams</span>
+            </h1>
+            <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
+                Professional design, social media, and strategy services for your brand
+            </p>
+            <a href="#contact" class="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full text-lg font-semibold inline-block hover:scale-105 transition">
+                Start Your Project
+            </a>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="py-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-12">Our Services</h2>
+            <div id="services-grid" class="grid md:grid-cols-3 gap-8">
+                Loading...
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio -->
+    <section id="portfolio" class="py-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-12">Portfolio</h2>
+            <div id="portfolio-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                Loading...
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="py-20">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-12">Contact Us</h2>
+            <div id="contact-info" class="glass rounded-3xl p-8 text-center">
+                Loading...
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/10 text-center text-gray-400">
+        <p>&copy; 2024 The Enfinitive. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Backend API URL - Local development
+        const API_URL = 'http://localhost:1337';
+        
+        // Load Services
+        async function loadServices() {
+            try {
+                const res = await fetch(`${API_URL}/api/services`);
+                const { data } = await res.json();
+                
+                document.getElementById('services-grid').innerHTML = data.map(s => `
+                    <div class="glass rounded-2xl p-8 text-center hover:scale-105 transition">
+                        <div class="text-5xl mb-4">${s.attributes.icon || '✨'}</div>
+                        <h3 class="text-2xl font-bold mb-3">${s.attributes.title}</h3>
+                        <p class="text-gray-400">${s.attributes.description}</p>
+                    </div>
+                `).join('');
+            } catch (e) {
+                // Fallback data
+                document.getElementById('services-grid').innerHTML = `
+                    <div class="glass rounded-2xl p-8"><div class="text-5xl mb-4">🎨</div><h3 class="text-2xl font-bold">Design</h3><p>UI/UX, Branding</p></div>
+                    <div class="glass rounded-2xl p-8"><div class="text-5xl mb-4">📱</div><h3 class="text-2xl font-bold">Social Media</h3><p>Content Strategy</p></div>
+                    <div class="glass rounded-2xl p-8"><div class="text-5xl mb-4">📊</div><h3 class="text-2xl font-bold">Strategy</h3><p>Digital Growth</p></div>
+                `;
+            }
+        }
+
+        // Load Portfolio
+        async function loadPortfolio() {
+            try {
+                const res = await fetch(`${API_URL}/api/portfolios?populate=*`);
+                const { data } = await res.json();
+                
+                document.getElementById('portfolio-grid').innerHTML = data.map(p => `
+                    <div class="glass rounded-2xl overflow-hidden">
+                        ${p.attributes.image?.data ? `<img src="${API_URL}${p.attributes.image.data.attributes.url}" class="w-full h-48 object-cover">` : ''}
+                        <div class="p-6">
+                            <span class="text-purple-400 text-sm">${p.attributes.category}</span>
+                            <h3 class="text-xl font-bold mt-2">${p.attributes.title}</h3>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                document.getElementById('portfolio-grid').innerHTML = '<p class="text-gray-500">Portfolio loading...</p>';
+            }
+        }
+
+        // Load Contact Info
+        async function loadContact() {
+            try {
+                const res = await fetch(`${API_URL}/api/contact-info`);
+                const { data } = await res.json();
+                
+                document.getElementById('contact-info').innerHTML = `
+                    <p class="text-xl mb-2">📧 ${data.attributes.email}</p>
+                    <p class="text-xl mb-2">📞 ${data.attributes.phone}</p>
+                    <p class="text-gray-400">${data.attributes.businessHours}</p>
+                `;
+            } catch (e) {
+                document.getElementById('contact-info').innerHTML = `
+                    <p class="text-xl mb-2">📧 hello@enfinitive.com</p>
+                    <p class="text-xl mb-2">📞 +1 (555) 123-4567</p>
+                `;
+            }
+        }
+
+        // Initialize
+        loadServices();
+        loadPortfolio();
+        loadContact();
+    </script>
+</body>
+</html>
